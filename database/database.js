@@ -15,7 +15,7 @@ var request = require('request');
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('port', 3000);
-
+app.use(express.static('public'));
 
 
 function updateRow(tableID,currentRow) {

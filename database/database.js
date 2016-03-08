@@ -104,13 +104,14 @@ app.get('/insert',function(req,res,next){
 });
 
 app.get('/',function(req,res,next){
-  //var context = {};
+  var context;
   mysql.pool.query('SELECT * FROM workouts', function(err, rows, fields){
     if(err){
       next(err);
       return;
     }
-    var context = '{"dataList" :' + JSON.stringify(rows) + '}';
+    var text = '{"dataList" :' + JSON.stringify(rows) + '}';
+    context = JSON.parse(text);
     res.render('table', context);
   });
 });

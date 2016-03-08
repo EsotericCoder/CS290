@@ -110,8 +110,8 @@ app.get('/',function(req,res,next){
       next(err);
       return;
     }
-    context.table = JSON.stringify(rows);
-    res.render('table', context);
+    context.results = JSON.stringify(rows);
+    res.render('home', context);
   });
 });
 

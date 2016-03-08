@@ -17,6 +17,17 @@ body {
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.06);
 }
 
+table {
+    width: 100%;
+}
+
+th, td {
+    height: 50px;
+    text-align: left;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
 title {
     color: #0000ff;
     font-weight: bold;

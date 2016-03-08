@@ -1,9 +1,11 @@
 <form action="/update" method="get">
   <legend>Update Activity</legend>
-    <p>Name: <input type="text" name="name">{{dataList.name}}</input></p>
-    <p>Reps: <input type="text" name="reps">{{dataList.reps}}</input></p>
-    <p>Weight: <input type="text" name="weight">{{dataList.weight}}</input></p>
-    <p>Date: <input type="text" name="date">{{dataList.date}}</input></p>
-    <p>Lbs: <input type="text" name="lbs">{{dataList.lbs}}</input></p>
+  {{#each dataList}}
+    <p>Name: <input type="text" name="name">{{this.name}}</input></p>
+    <p>Reps: <input type="text" name="reps">{{this.reps}}</input></p>
+    <p>Weight: <input type="text" name="weight">{{this.weight}}</input></p>
+    <p>Date: <input type="text" name="date">{{this.date}}</input></p>
+    <p>Lbs: <input type="text" name="lbs">{{this.lbs}}</input></p>
     <p><input type="submit" /></p>
+  {{/each}}
 </form>

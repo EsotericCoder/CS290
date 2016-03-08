@@ -17,7 +17,7 @@ app.set('view engine', 'handlebars');
 app.set('port', 3000);
 
 
-function deleteRow(tableID,currentRow) {
+function deleteRow(rowID) {
     try {
         var table = document.getElementById(tableID);
         var rowCount = table.rows.length;
@@ -100,7 +100,8 @@ app.get('/reset-table',function(req,res,next){
 
 app.get('/insert',function(req,res,next){
   var context;
-  mysql.pool.query("INSERT INTO workouts (`name`, `reps`, `weight`, `date`, `lbs`) VALUES (?,?,?,?,?)", [req.query.name, req.query.reps, req.query.weight, req.query.date, req.query.lbs], function(err, result){
+  if(req.query.name != ""){
+    mysql.pool.query("INSERT INTO workouts (`name`, `reps`, `weight`, `date`, `lbs`) VALUES (?,?,?,?,?)", [req.query.name, req.query.reps, req.query.weight, req.query.date, req.query.lbs], function(err, result){
     mysql.pool.query('SELECT * FROM workouts', function(err, rows, fields){
     if(err){
       next(err);
@@ -109,8 +110,9 @@ app.get('/insert',function(req,res,next){
     var text = '{"dataList" :' + JSON.stringify(rows) + '}';
     context = JSON.parse(text);
     res.render('table', context);
+      });
     });
-  });
+  }
 });
 
 app.get('/',function(req,res,next){

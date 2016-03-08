@@ -113,7 +113,7 @@ app.get('/',function(req,res,next){
 
 app.get('/updateForm',function(req,res,next){
   var context;
-  mysql.pool.query('SELECT * FROM workouts WHERE id=?',[req.query.id] function(err, rows, fields){
+  mysql.pool.query('SELECT * FROM workouts WHERE id=?',[req.query.id], function(err, rows, fields){
     if(err){
       next(err);
       return;

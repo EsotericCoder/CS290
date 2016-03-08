@@ -39,7 +39,15 @@ function deleteRow(tableID,currentRow) {
     } catch (e) {
         alert(e);
     }
-    //getValues();
+    mysql.pool.query('SELECT * FROM workouts', function(err, rows, fields){
+      if(err){
+        next(err);
+        return;
+      }
+      var text = '{"dataList" :' + JSON.stringify(rows) + '}';
+      context = JSON.parse(text);
+      res.render('table', context);
+    });
 }
 
 function updateRow(tableID,currentRow) {
@@ -67,7 +75,7 @@ function updateRow(tableID,currentRow) {
 }
 
 app.get('/reset-table',function(req,res,next){
-  var context = {};
+  var context;
   mysql.pool.query("DROP TABLE IF EXISTS workouts", function(err){
     var createString = "CREATE TABLE workouts(" +
     "id INT PRIMARY KEY AUTO_INCREMENT," +
@@ -82,7 +90,8 @@ app.get('/reset-table',function(req,res,next){
         next(err);
         return;
       }
-      context.dataList = JSON.stringify(rows);
+      var text = '{"dataList" :' + JSON.stringify(rows) + '}';
+      context = JSON.parse(text);
       res.render('table', context);
       });
     });
@@ -90,14 +99,15 @@ app.get('/reset-table',function(req,res,next){
 });
 
 app.get('/insert',function(req,res,next){
-  var context = {};
+  var context;
   mysql.pool.query("INSERT INTO workouts (`name`, `reps`, `weight`, `date`, `lbs`) VALUES (?,?,?,?,?)", [req.query.name, req.query.reps, req.query.weight, req.query.date, req.query.lbs], function(err, result){
     mysql.pool.query('SELECT * FROM workouts', function(err, rows, fields){
     if(err){
       next(err);
       return;
     }
-    context.dataList = JSON.stringify(rows);
+    var text = '{"dataList" :' + JSON.stringify(rows) + '}';
+    context = JSON.parse(text);
     res.render('table', context);
     });
   });
@@ -117,7 +127,7 @@ app.get('/',function(req,res,next){
 });
 
 app.get('/update',function(req,res,next){
-  var context = {};
+  var context;
   mysql.pool.query("UPDATE workouts SET name=?, reps=?, weight=?, date=?, lbs=? WHERE id=?",
     [req.query.name, req.query.reps, req.query.weight, req.query.date, req.query.lbs, req.query.id],
     function(err, result){
@@ -126,7 +136,8 @@ app.get('/update',function(req,res,next){
       next(err);
       return;
     }
-    context.dataList = JSON.stringify(rows);
+    var text = '{"dataList" :' + JSON.stringify(rows) + '}';
+    context = JSON.parse(text);
     res.render('table', context);
     });
   });

@@ -22,13 +22,13 @@
   </thead>
   <tbody>
 
-  {{#each table}}
+  {{#each dataList}}
     <tr>
-      <td>{{name}}</td>
-      <td>{{reps}}</td>
-      <td>{{weight}}</td>
-      <td>{{date}}</td>
-      <td>{{lbs}}</td>
+      <td>{{this.name}}</td>
+      <td>{{this.reps}}</td>
+      <td>{{this.weight}}</td>
+      <td>{{this.date}}</td>
+      <td>{{this.lbs}}</td>
     </tr>
   {{/each}}
 

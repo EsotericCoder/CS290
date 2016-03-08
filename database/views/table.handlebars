@@ -30,9 +30,13 @@
       <td>{{this.date}}</td>
       <td>{{this.lbs}}</td>
       <td>
-      <form action="/update" method="get">
+      <form action="/updateForm" method="get">
         <input type="hidden" name="id" value="{{this.id}}">
-        <input type="submit">Delete</input>
+        <input type="button" value="update"/>
+      </form>
+      <form action="/delete" method="get">
+        <input type="hidden" name="id" value="{{this.id}}">
+        <input type="button" value="Delete"/>
       </form>
       <td>
   </tr>

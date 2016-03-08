@@ -111,6 +111,19 @@ app.get('/',function(req,res,next){
   });
 });
 
+app.get('/updateForm',function(req,res,next){
+  var context;
+  mysql.pool.query('SELECT * FROM workouts WHERE id=?',[req.query.id] function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    var text = '{"dataList" :' + JSON.stringify(rows) + '}';
+    context = JSON.parse(text);
+    res.render('update', context);
+  });
+});
+
 app.get('/update',function(req,res,next){
   var context;
   mysql.pool.query("UPDATE workouts SET name=?, reps=?, weight=?, date=?, lbs=? WHERE id=?",

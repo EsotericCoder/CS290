@@ -77,8 +77,13 @@ app.get('/reset-table',function(req,res,next){
     "date DATE," +
     "lbs INT)";
     mysql.pool.query(createString, function(err){
-      context.results = "Table reset";
-      res.render('home',context);
+      mysql.pool.query('SELECT * FROM workouts', function(err, rows, fields){
+      if(err){
+        next(err);
+        return;
+      }
+      context.table = JSON.stringify(rows);
+      res.render('table', context);
     })
   });
 });
@@ -86,12 +91,13 @@ app.get('/reset-table',function(req,res,next){
 app.get('/insert',function(req,res,next){
   var context = {};
   mysql.pool.query("INSERT INTO workouts (`name`, `reps`, `weight`, `date`, `lbs`) VALUES (?,?,?,?,?)", [req.query.name, req.query.reps, req.query.weight, req.query.date, req.query.lbs], function(err, result){
+    mysql.pool.query('SELECT * FROM workouts', function(err, rows, fields){
     if(err){
       next(err);
       return;
     }
-    context.results = "Inserted id " + result.insertId;
-    res.render('home',context);
+    context.table = JSON.stringify(rows);
+    res.render('table', context);
   });
 });
 
@@ -102,8 +108,8 @@ app.get('/',function(req,res,next){
       next(err);
       return;
     }
-    context.results = JSON.stringify(rows);
-    res.render('home', context);
+    context.table = JSON.stringify(rows);
+    res.render('table', context);
   });
 });
 
@@ -112,12 +118,13 @@ app.get('/update',function(req,res,next){
   mysql.pool.query("UPDATE workouts SET name=?, reps=?, weight=?, date=?, lbs=? WHERE id=?",
     [req.query.name, req.query.reps, req.query.weight, req.query.date, req.query.lbs, req.query.id],
     function(err, result){
+    mysql.pool.query('SELECT * FROM workouts', function(err, rows, fields){
     if(err){
       next(err);
       return;
     }
-    context.results = "Updated " + result.changedRows + " rows.";
-    res.render('home',context);
+    context.table = JSON.stringify(rows);
+    res.render('table', context);
   });
 });
 

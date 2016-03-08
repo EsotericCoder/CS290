@@ -17,38 +17,6 @@ app.set('view engine', 'handlebars');
 app.set('port', 3000);
 
 
-function deleteRow(rowID) {
-    try {
-        var table = document.getElementById(tableID);
-        var rowCount = table.rows.length;
-        for (var i = 0; i < rowCount; i++) {
-            var row = table.rows[i];
-            /*var chkbox = row.cells[0].childNodes[0];*/
-            /*if (null != chkbox && true == chkbox.checked)*/
-            
-            if (row==currentRow.parentNode.parentNode) {
-                if (rowCount <= 1) {
-                    alert("Cannot delete all the rows.");
-                    break;
-                }
-                table.deleteRow(i);
-                rowCount--;
-                i--;
-            }
-        }
-    } catch (e) {
-        alert(e);
-    }
-    mysql.pool.query('SELECT * FROM workouts', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
-      var text = '{"dataList" :' + JSON.stringify(rows) + '}';
-      context = JSON.parse(text);
-      res.render('table', context);
-    });
-}
 
 function updateRow(tableID,currentRow) {
     try {
@@ -113,6 +81,21 @@ app.get('/insert',function(req,res,next){
       });
     });
   }
+});
+
+app.get('/delete',function(req,res,next){
+  var context;
+    mysql.pool.query("DELETE FROM workouts WHERE id=?", [req.query.id], function(err, result){
+    mysql.pool.query('SELECT * FROM workouts', function(err, rows, fields){
+    if(err){
+      next(err);
+      return;
+    }
+    var text = '{"dataList" :' + JSON.stringify(rows) + '}';
+    context = JSON.parse(text);
+    res.render('table', context);
+      });
+    });
 });
 
 app.get('/',function(req,res,next){

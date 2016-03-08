@@ -22,22 +22,15 @@
   </thead>
   <tbody>
 
-{{#each table}}
+  {{#each table}}
     <tr>
       <td>{{this.name}}</td>
       <td>{{this.reps}}</td>
       <td>{{this.weight}}</td>
       <td>{{this.date}}</td>
       <td>{{this.lbs}}</td>
-      <td>
-      <form action="" method="post">
-        <input type="hidden" name="id" value="{{this.id}}">
-        <input type="button" name="Update" onClick="updateRow('dataTable',this)">
-        <input type="button" value="Delete" onClick="deleteRow('dataTable',this)">
-      </form>
-      </td>
     </tr>
-{{/each}}
+  {{/each}}
 
   </tbody>
 </table>

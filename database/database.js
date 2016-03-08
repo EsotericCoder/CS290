@@ -84,7 +84,8 @@ app.get('/reset-table',function(req,res,next){
       }
       context.table = JSON.stringify(rows);
       res.render('table', context);
-    })
+      });
+    });
   });
 });
 
@@ -98,6 +99,7 @@ app.get('/insert',function(req,res,next){
     }
     context.table = JSON.stringify(rows);
     res.render('table', context);
+    });
   });
 });
 
@@ -125,6 +127,7 @@ app.get('/update',function(req,res,next){
     }
     context.table = JSON.stringify(rows);
     res.render('table', context);
+    });
   });
 });
 

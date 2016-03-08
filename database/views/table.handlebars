@@ -1,0 +1,43 @@
+<form action="/insert" method="post">
+  <legend>Add New Activity</legend>
+    <p>Name: <input type="text" name="name" /></p>
+    <p>Reps: <input type="text" name="reps" /></p>
+    <p>Weight: <input type="text" name="weight" /></p>
+    <p>Date: <input type="text" name="date" /></p>
+    <p>Lbs: <input type="text" name="lbs" /></p>
+    <p><input type="submit" /></p>
+</form>
+
+
+<table id="dataTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Reps</th>
+      <th>Weight</th>
+      <th>Date</th>
+      <th>Lbs</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+{{#if table}}
+  {{#each table}}
+  <tr>
+    <td>{{this.name}}</td>
+    <td>{{this.reps}}</td>
+    <td>{{this.weight}}</td>
+    <td>{{this.date}}</td>
+    <td>{{this.lbs}}</td>
+    <td>
+    <form action="" method="post">
+      <input type="hidden" name="id" value="{{this.id}}">
+      <input type="button" name="Update" onClick="updateRow('dataTable',this)">
+      <input type="button" value="Delete" onClick="deleteRow('dataTable',this)">
+    </form>
+    <td>
+  </tr>
+  {{/each}}
+{{/if}}
+  </tbody>
+</table>

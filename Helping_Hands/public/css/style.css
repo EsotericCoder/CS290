@@ -28,7 +28,7 @@ th, td {
     border-bottom: 1px solid #ddd;
 }
 
-title {
+title, legend {
     color: #0000ff;
     font-weight: bold;
     font-size: 200%

@@ -1,6 +1,6 @@
-<form action="/request" method="get">
+<form action="/requests" method="get">
   <legend>New Request</legend>
-    <p>Description: <textarea rows="4" colums="50" name="Description"/></p>
+    <p>Description: <input type="text" name="Description" /></p>
     <p>Repair Type: <select name="RequestType">
     	<option value=""></option>
   		<option value="Electrical">Electrical</option>
@@ -11,5 +11,5 @@
 </form>
 
 <form action="/list" method="list">
-	<p><input type="Repair List" /></p>
+	<button type="submit">Repair Job List</button>
 </form>

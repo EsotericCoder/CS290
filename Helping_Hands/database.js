@@ -20,17 +20,25 @@ app.use(session({
 }));
 
 
-app.post('/login', function(req, res) {
-  User.findOne({ Email: req.body.Email }, function(err, user) {
-    if (!user) {
-      res.render('login.jade', { error: 'Invalid email or password.' });
+app.get('/login', function(req, res) {
+  mysql.pool.query("SELECT * FROM hh_User WHERE Email=?", req.query.Email, function(err, row, fields) {
+    //If the query result is empty then no email exists.
+    if (row == null) {
+      console.log("User email not found");
+      //Send back to login
+      res.render('login');    //Render the login Handlebars page
+    //Else a matching email was found and now we can test against password
     } else {
-      if (req.body.Password === user.Password) {
-        // sets a cookie with the user's info
-        req.session.UserId = user.UserId;
+      //If the password is correct matches whats in the database 
+      if (req.query.Password == row[0].Password) {
+        
+        // We need to sets a cookie or session with the user's info here
+        //req.session.userid = row[0].UserId;
+        
         res.redirect('/requests');
       } else {
-        res.render('login.jade', { error: 'Invalid email or password.' });
+        console.log("Wrong Password");
+        res.render('login');
       }
     }
   });
@@ -38,9 +46,14 @@ app.post('/login', function(req, res) {
 
 app.get('/registration',function(req,res,next){
   var context;
-  if(req.query.name != ""){
-    mysql.pool.query("INSERT INTO hh_User (`FirstName`, `LastName`, `Email`, `Phone`, `Address1`, `Address2`, `City`, `State`, `Zip`) VALUES (?,?,?,?)", [req.query.FirstName, req.query.LastName, req.query.Email, req.query.Phone, req.query.Address1, req.query.Address2, req.query.City, req.query.State, req.query.Zip], function(err, result){
-    res.render('requests');
+  if(req.query.Email != ""){
+    mysql.pool.query("INSERT INTO hh_User (`FirstName`, `LastName`, `Email`, `Password`, `Phone`, `AddressLine1`, `AddressLine2`, `City`, `State`, `Zip`) VALUES (?,?,?,?,?,?,?,?,?,?)", 
+      [req.query.FirstName, req.query.LastName, req.query.Email, req.query.Password, req.query.Phone, req.query.Address1, req.query.Address2, req.query.City, req.query.State, req.query.Zip], 
+      function(err, result){
+        if(err){
+          console.log(err);
+        }
+        res.render('requests');
     });
   }
 });
@@ -48,10 +61,16 @@ app.get('/registration',function(req,res,next){
 app.get('/requests',function(req,res,next){
   var context;
   var time = new Date();
-  if(req.query.name != ""){
-    mysql.pool.query("INSERT INTO hh_Request (`Description`, `RequestType`, `DateRequested`) VALUES (?,?,?)", [req.query.Description, req.query.RequestType, time], function(err, result){
-    res.render('requests');
-    });
+  if(req.query.Description != ""){
+    //Need to replace 1 with actual requesterID when sessions is figured out
+    mysql.pool.query("INSERT INTO hh_Request (`Description`, `RequestType`, `DateRequested`, `RequesterId`) VALUES (?,?,?,?)", 
+      [req.query.Description, req.query.RequestType, time, 1], 
+      function(err, result){
+        if(err){
+          console.log(err);
+        }
+        res.render('requests');
+      });
   }
 });
 
@@ -59,8 +78,7 @@ app.get('/list',function(req,res,next){
   var context;
   mysql.pool.query('SELECT * FROM hh_Request', function(err, rows, fields){
     if(err){
-      next(err);
-      return;
+      console.log(err);
     }
     var text = '{"dataList" :' + JSON.stringify(rows) + '}';
     context = JSON.parse(text);
@@ -71,27 +89,17 @@ app.get('/list',function(req,res,next){
 app.get('/pickJob',function(req,res,next){
   var context;
   var time = new Date();
-  mysql.pool.query("UPDATE hh_Request SET VolunteerId=? WHERE id=?",
+  mysql.pool.query("UPDATE hh_Request SET VolunteerId=? WHERE id=? VALUES (?,?)",
   [req.session.UserId, req.query.id], function(err, rows, fields){
     if(err){
-      next(err);
-      return;
+      console.log(err);
     }
     res.render('requests');
   });
 });
 
 app.get('/',function(req,res,next){
-  var context;
-  mysql.pool.query('SELECT * FROM workouts', function(err, rows, fields){
-    if(err){
-      next(err);
-      return;
-    }
-    var text = '{"dataList" :' + JSON.stringify(rows) + '}';
-    context = JSON.parse(text);
-    res.render('login', context);
-  });
+  res.render('login');
 });
 
 

@@ -15,7 +15,8 @@
       <td>{{this.Description}}</td>
       <td>{{this.City}}</td>
       <td>
-      <form action="/pickJob" method="get">
+      #Once we have sessions we will redirect it to /pickjobs
+      <form action="/list" method="get">
         <input type="hidden" name="id" value="{{this.id}}">
 
         <input type="submit" value="Pick Job"/>

@@ -88,13 +88,13 @@ app.get('/list',function(req,res,next){
 
 app.get('/pickJob',function(req,res,next){
   var context;
-  var time = new Date();
-  mysql.pool.query("UPDATE hh_Request SET VolunteerId=? WHERE id=? VALUES (?,?)",
+  //Once we get the sessions working, we can run this code.
+  mysql.pool.query("UPDATE hh_Request SET VolunteerId=?  WHERE id=? VALUES (?,?)",
   [req.session.UserId, req.query.id], function(err, rows, fields){
     if(err){
       console.log(err);
     }
-    res.render('requests');
+    res.render('jobs');
   });
 });
 

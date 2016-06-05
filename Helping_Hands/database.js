@@ -78,7 +78,7 @@ app.get('/requests',function(req,res,next){
 
 app.get('/list',function(req,res,next){
   var context;
-  mysql.pool.query('SELECT * FROM hh_Request WHERE VolunteerId IS NOT NULL', function(err, rows, fields){
+  mysql.pool.query('SELECT * FROM hh_Request WHERE VolunteerId IS NULL', function(err, rows, fields){
     if(err){
       console.log(err);
     }

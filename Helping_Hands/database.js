@@ -6,12 +6,14 @@ var handlebars = require('express-handlebars').create({defaultLayout:'main'});
 var session = require('client-sessions');
 var bodyParser = require('body-parser');
 var request = require('request');
+var userId = "";
 
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('port', 3000);
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
   cookieName: 'mySession', // cookie name dictates the key name added to the request object
   secret: 'blargadeeblargblarg', // should be a large unguessable string
@@ -31,10 +33,7 @@ app.get('/login', function(req, res) {
     } else {
       //If the password is correct matches whats in the database 
       if (req.query.Password == row[0].Password) {
-        
-        // We need to sets a cookie or session with the user's info here
-        //req.session.userid = row[0].UserId;
-        
+        userId = row[0].UserId;
         res.redirect('/requests');
       } else {
         console.log("Wrong Password");
@@ -53,6 +52,9 @@ app.get('/registration',function(req,res,next){
         if(err){
           console.log(err);
         }
+        mysql.pool.query("SELECT * FROM hh_User WHERE Email=?", req.query.Email, function(err, row, fields) {
+          userId = row[0].UserId;
+        });
         res.render('requests');
     });
   }
@@ -64,7 +66,7 @@ app.get('/requests',function(req,res,next){
   if(req.query.Description != ""){
     //Need to replace 1 with actual requesterID when sessions is figured out
     mysql.pool.query("INSERT INTO hh_Request (`Description`, `RequestType`, `DateRequested`, `RequesterId`) VALUES (?,?,?,?)", 
-      [req.query.Description, req.query.RequestType, time, 1], 
+      [req.query.Description, req.query.RequestType, time, userId], 
       function(err, result){
         if(err){
           console.log(err);
@@ -76,7 +78,7 @@ app.get('/requests',function(req,res,next){
 
 app.get('/list',function(req,res,next){
   var context;
-  mysql.pool.query('SELECT * FROM hh_Request', function(err, rows, fields){
+  mysql.pool.query('SELECT * FROM hh_Request WHERE VolunteerId IS NOT NULL', function(err, rows, fields){
     if(err){
       console.log(err);
     }
@@ -90,12 +92,26 @@ app.get('/pickJob',function(req,res,next){
   var context;
   //Once we get the sessions working, we can run this code.
   mysql.pool.query("UPDATE hh_Request SET VolunteerId=?  WHERE id=? VALUES (?,?)",
-  [req.session.UserId, req.query.id], function(err, rows, fields){
+  [userId, req.query.id], function(err, rows, fields){
     if(err){
       console.log(err);
     }
     res.render('jobs');
   });
+});
+
+app.post('/filter', function (req, res, next) {
+    var context;
+    console.log(req.body);      // test if getting correct values in body
+    mysql.pool.query("SELECT * FROM hh_Request r INNER JOIN hh_User u ON u.UserId = r.RequesterId WHERE ((u.City=? AND u.State=?) OR (u.Zip=?)) AND r.Status=?",
+        [req.body.citySearch, req.body.stateSearch, req.body.zipSearch, "Open"], function (err, rows, fields) {
+            if (err) {
+                console.log(err);
+            }
+            var text = '{"dataList" :' + JSON.stringify(rows) + '}';
+            context = JSON.parse(text);
+            res.render('jobs', context);
+        });
 });
 
 app.get('/',function(req,res,next){

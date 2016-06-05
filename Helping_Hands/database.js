@@ -65,14 +65,17 @@ app.get('/requests',function(req,res,next){
   var time = new Date();
   if(req.query.Description != ""){
     //Need to replace 1 with actual requesterID when sessions is figured out
-    mysql.pool.query("INSERT INTO hh_Request (`Description`, `RequestType`, `DateRequested`, `RequesterId`) VALUES (?,?,?,?)", 
-      [req.query.Description, req.query.RequestType, time, userId], 
-      function(err, result){
-        if(err){
-          console.log(err);
-        }
-        res.render('requests');
+    mysql.pool.query("SELECT * FROM hh_User WHERE UserId=?", userId, function(err, row, fields) {
+          userId = row[0].UserId;
+    
+      mysql.pool.query("INSERT INTO hh_Request (`Description`, `RequestType`, `DateRequested`, `RequesterId`, `) VALUES (?,?,?,?)", 
+        [req.query.Description, req.query.RequestType, time, userId], function(err, result){
+          if(err){
+            console.log(err);
+          }
+          res.render('requests');
       });
+    });
   }
 });
 
@@ -91,7 +94,7 @@ app.get('/list',function(req,res,next){
 app.get('/pickJob',function(req,res,next){
   var context;
   //Once we get the sessions working, we can run this code.
-  mysql.pool.query("UPDATE hh_Request SET VolunteerId=?  WHERE id=? VALUES (?,?)",
+  mysql.pool.query("UPDATE hh_Request SET VolunteerId=?  WHERE RequestId=? VALUES (?,?)",
   [userId, req.query.id], function(err, rows, fields){
     if(err){
       console.log(err);
@@ -104,13 +107,13 @@ app.post('/filter', function (req, res, next) {
     var context;
     console.log(req.body);      // test if getting correct values in body
     mysql.pool.query("SELECT * FROM hh_Request r INNER JOIN hh_User u ON u.UserId = r.RequesterId WHERE ((u.City=? AND u.State=?) OR (u.Zip=?)) AND r.Status=?",
-        [req.body.citySearch, req.body.stateSearch, req.body.zipSearch, "Open"], function (err, rows, fields) {
+       [req.body.citySearch, req.body.stateSearch, req.body.zipSearch, "Open"], function (err, rows, fields) {
             if (err) {
                 console.log(err);
             }
             var text = '{"dataList" :' + JSON.stringify(rows) + '}';
             context = JSON.parse(text);
-            res.render('jobs', context);
+            res.render('jobs', context);C
         });
 });
 

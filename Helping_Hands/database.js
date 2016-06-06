@@ -81,7 +81,7 @@ app.get('/requests',function(req,res,next){
 
 app.get('/list',function(req,res,next){
   var context;
-  mysql.pool.query('SELECT * FROM hh_Request WHERE VolunteerId IS NULL', function(err, rows, fields){
+  mysql.pool.query('SELECT * FROM hh_Request r INNER JOIN hh_User u ON u.UserId = r.RequesterId WHERE VolunteerId IS NULL', function(err, rows, fields){
     if(err){
       console.log(err);
     }
@@ -94,12 +94,19 @@ app.get('/list',function(req,res,next){
 app.get('/pickJob',function(req,res,next){
   var context;
   //Once we get the sessions working, we can run this code.
-  mysql.pool.query("UPDATE hh_Request SET VolunteerId=?  WHERE RequestId=? VALUES (?,?)",
+  mysql.pool.query("UPDATE hh_Request SET VolunteerId=?  WHERE RequestId=?",
   [userId, req.query.id], function(err, rows, fields){
     if(err){
       console.log(err);
     }
-    res.render('jobs');
+    mysql.pool.query('SELECT * FROM hh_Request r INNER JOIN hh_User u ON u.UserId = r.RequesterId WHERE VolunteerId IS NULL', function(err, rows, fields){
+    if(err){
+      console.log(err);
+    }
+    var text = '{"dataList" :' + JSON.stringify(rows) + '}';
+    context = JSON.parse(text);
+    res.render('jobs', context);
+  });
   });
 });
 

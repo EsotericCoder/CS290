@@ -68,7 +68,7 @@ app.get('/requests',function(req,res,next){
     mysql.pool.query("SELECT * FROM hh_User WHERE UserId=?", userId, function(err, row, fields) {
           userId = row[0].UserId;
     
-      mysql.pool.query("INSERT INTO hh_Request (`Description`, `RequestType`, `DateRequested`, `RequesterId`, `) VALUES (?,?,?,?)", 
+      mysql.pool.query("INSERT INTO hh_Request (`Description`, `RequestType`, `DateRequested`, `RequesterId`) VALUES (?,?,?,?)", 
         [req.query.Description, req.query.RequestType, time, userId], function(err, result){
           if(err){
             console.log(err);

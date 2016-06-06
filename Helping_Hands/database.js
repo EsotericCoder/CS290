@@ -106,7 +106,7 @@ app.get('/pickJob',function(req,res,next){
 app.post('/filter', function (req, res, next) {
     var context;
     console.log(req.body);      // test if getting correct values in body
-    mysql.pool.query("SELECT * FROM hh_Request r INNER JOIN hh_User u ON u.UserId = r.RequesterId WHERE ((u.City=? AND u.State=?) OR (u.Zip=?))",
+    mysql.pool.query("SELECT * FROM hh_Request r INNER JOIN hh_User u ON u.UserId = r.RequesterId WHERE ((u.City=? AND u.State=?) OR (u.Zip=?)) VALUES (?, ?, ?)",
        [req.body.citySearch, req.body.stateSearch, req.body.zipSearch], function (err, rows, fields) {
             if (err) {
                 console.log(err);
@@ -114,7 +114,7 @@ app.post('/filter', function (req, res, next) {
             console.log(rows[0]);
             var text = '{"dataList" :' + JSON.stringify(rows) + '}';
             context = JSON.parse(text);
-            res.render('jobs', context);C
+            res.render('jobs', context);
         });
 });
 

@@ -111,7 +111,7 @@ app.post('/filter', function (req, res, next) {
             if (err) {
                 console.log(err);
             }
-            console.log(row[0]);
+            console.log(rows[0]);
             var text = '{"dataList" :' + JSON.stringify(rows) + '}';
             context = JSON.parse(text);
             res.render('jobs', context);C

@@ -1,10 +1,3 @@
-/* William Kim
-   kimw@oregonstate.edu
-   CS290
-   database.js
-   3/8/16
-*/
-
 var express = require('express');
 var mysql = require('./dbcon.js');
 
@@ -23,10 +16,7 @@ function updateRow(tableID,currentRow) {
         var table = document.getElementById(tableID);
         var rowCount = table.rows.length;
         for (var i = 0; i < rowCount; i++) {
-            var row = table.rows[i];
-            /*var chkbox = row.cells[0].childNodes[0];*/
-            /*if (null != chkbox && true == chkbox.checked)*/
-            
+            var row = table.rows[i];           
             if (row==currentRow.parentNode.parentNode) {
                 if (rowCount <= 1) {
                     alert("Cannot delete all the rows.");

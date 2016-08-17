@@ -1,0 +1,40 @@
+<h1>Student Directory</h1>
+
+<table id="dataTable">
+  <thead>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email</th>
+      <th>Phone Number</th>
+      <th>Gender</th>
+      <th>Receive Emails</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+
+{{#each dataList}}
+    <tr>
+      <td>{{this.fname}}</td>
+      <td>{{this.lname}}</td>
+      <td>{{this.email}}</td>
+      <td>{{this.tel}}</td>
+      <td>{{this.gender}}</td>
+      <td>{{this.updates}}</td>
+      <td>
+      <form action="/assign2/edit" method="get">
+        <input type="hidden" name="id" value="{{this.id}}">
+        <input type="submit" value="Edit Entry"/>
+      </form>
+      <td>
+  </tr>
+{{/each}}
+
+  </tbody>
+</table>
+<br>
+<br>
+<form action="/assign2" method="get">
+  <button type="submit">Back</button>
+</form>

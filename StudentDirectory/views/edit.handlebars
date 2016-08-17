@@ -1,0 +1,27 @@
+<h1>{{results}}</h1>
+
+<h1>Student Directory</h1>
+
+<form action="/assign2/update" method="get">
+  <h2>Edit Student</h2>
+  {{#each dataList}}
+    <p>First Name <input type="text" name="fname" value={{this.fname}} /></p>
+    <p>Last Name <input type="text" name="lname" value={{this.lname}} /></p>
+    <p>Email <input type="email" name="email" value={{this.email}} /></p>
+    <p>Phone Number <input type="tel" name="tel" value={{this.tel}} /></p>
+    <div>
+      <h4>Gender</h4>
+      <input type="radio" name="gender" value="male" {{checkedMale}}> Male<br>
+      <input type="radio" name="gender" value="female" {{checkedFemale}}> Female<br>
+      <input type="radio" name="gender" value="other" {{checkedOther}}> Other
+
+    <div>
+    <div>
+      <h4>Would you like to receive daily emails?</h4>
+      <input type="checkbox" name="updates" value="yes" {{checkedYes}}>Yes<br>
+      <input type="checkbox" name="updates" value="no" {{checkedNo}}>No
+    <div>
+       <input type="hidden" name="id" value="{{this.id}}">
+       <input type="submit" value="Update"/>
+   {{/each}}
+</form>

@@ -1,10 +1,3 @@
-/* 
-    William Kim
-    kimw@Oregonstate.edu
-    CS290
-    style.css
-    3/7/16
-*/
 body {
     margin: 0 auto;
     padding: 2em 2em 4em;
@@ -28,7 +21,7 @@ th, td {
     border-bottom: 1px solid #ddd;
 }
 
-title {
+title, legend {
     color: #0000ff;
     font-weight: bold;
     font-size: 200%

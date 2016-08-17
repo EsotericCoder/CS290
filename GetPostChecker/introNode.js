@@ -1,10 +1,3 @@
-/* William Kim
-   kimw@oregonstate.edu
-   CS290
-   Get & Post Assignment
-   2/21/16
-*/
-
 var express = require('express');
 
 var app = express();

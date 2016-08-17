@@ -1,0 +1,28 @@
+<h1>Student Database</h1>
+
+<form action="/assign2/add" method="get">
+  <h2>Add New Student</h2>
+    <p>First Name <input type="text" name="fname" /></p>
+    <p>Last Name <input type="text" name="lname" /></p>
+    <p>Email <input type="email" name="email" /></p>
+    <p>Phone Number <input type="tel" name="tel" /></p>
+    <div>
+      <h4>Gender</h4>
+      <input type="radio" name="gender" value="male"> Male<br>
+      <input type="radio" name="gender" value="female"> Female<br>
+      <input type="radio" name="gender" value="other"> Other
+    <div>
+    <div>
+      <h4>Would you like to receive daily emails?</h4>
+      <input type="checkbox" name="updates" value="yes">Yes<br>
+      <input type="checkbox" name="updates" value="no">No
+    <p><input type="submit" /></p>
+</form>
+
+<br/>
+
+<h4>View Student Database</h4>
+<form action="/assign2/list" method="get">
+  <button type="submit">Student Directory List</button>
+</form>
+

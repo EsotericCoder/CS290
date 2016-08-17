@@ -23,6 +23,24 @@ app.use(session({
 
 //GETS
 
+app.get('/',function(req,res,next){
+  res.render('login');
+});
+
+app.get('/filter', function (req, res, next) {
+    var context;
+    mysql.pool.query("SELECT * FROM hh_Request r INNER JOIN hh_User u ON u.UserId = r.RequesterId WHERE ((u.City=? AND u.State=?) OR (u.Zip=?)) AND VolunteerId IS NULL",
+       [req.query.citySearch, req.query.stateSearch, req.query.zipSearch], function (err, rows, fields) {
+            if (err) {
+                console.log(err);
+            }
+            console.log(rows[0]);
+            var text = '{"dataList" :' + JSON.stringify(rows) + '}';
+            context = JSON.parse(text);
+            res.render('jobs', context);
+        });
+});
+
 app.get('/requests',function(req,res,next){
   var context;
   var time = new Date();
@@ -111,24 +129,6 @@ app.post('/pickJob',function(req,res,next){
     res.render('jobs', context);
   });
   });
-});
-
-app.get('/filter', function (req, res, next) {
-    var context;
-    mysql.pool.query("SELECT * FROM hh_Request r INNER JOIN hh_User u ON u.UserId = r.RequesterId WHERE ((u.City=? AND u.State=?) OR (u.Zip=?)) AND VolunteerId IS NULL",
-       [req.query.citySearch, req.query.stateSearch, req.query.zipSearch], function (err, rows, fields) {
-            if (err) {
-                console.log(err);
-            }
-            console.log(rows[0]);
-            var text = '{"dataList" :' + JSON.stringify(rows) + '}';
-            context = JSON.parse(text);
-            res.render('jobs', context);
-        });
-});
-
-app.get('/',function(req,res,next){
-  res.render('login');
 });
 
 

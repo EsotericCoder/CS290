@@ -2,7 +2,7 @@
 
 <div id="requestSearch">
     <h4>Search for Open Requests Near You</h4>
-    <form action="/filter" method="post">
+    <form action="/filter" method="get">
         <p>By City: <input type="text" name="citySearch" /></p>
         <p>By State: <select name="stateSearch">
                          <option value=""></option>
@@ -83,7 +83,7 @@
       <td>{{this.Description}}</td>
       <td>{{this.City}}</td>
       <td>
-      <form action="/pickJob" method="get">
+      <form action="/pickJob" method="post">
         <input type="hidden" name="id" value="{{this.RequestId}}">
 
         <input type="submit" value="Pick Job"/>

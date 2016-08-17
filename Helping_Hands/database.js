@@ -15,50 +15,13 @@ app.set('port', 3000);
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
-  cookieName: 'mySession', // cookie name dictates the key name added to the request object
-  secret: 'blargadeeblargblarg', // should be a large unguessable string
-  duration: 24 * 60 * 60 * 1000, // how long the session will stay valid in ms
-  activeDuration: 1000 * 60 * 5 // if expiresIn < activeDuration, the session will be extended by activeDuration milliseconds
+  cookieName: 'mySession', 
+  secret: 'blargadeeblargblarg',
+  duration: 24 * 60 * 60 * 1000, 
+  activeDuration: 1000 * 60 * 5 
 }));
 
-
-app.get('/login', function(req, res) {
-  mysql.pool.query("SELECT * FROM hh_User WHERE Email=?", req.query.Email, function(err, row, fields) {
-    //If the query result is empty then no email exists.
-    if (row == null) {
-      console.log("User email not found");
-      //Send back to login
-      res.render('login');    //Render the login Handlebars page
-    //Else a matching email was found and now we can test against password
-    } else {
-      //If the password is correct matches whats in the database 
-      if (req.query.Password == row[0].Password) {
-        userId = row[0].UserId;
-        res.redirect('/requests');
-      } else {
-        console.log("Wrong Password");
-        res.render('login');
-      }
-    }
-  });
-});
-
-app.get('/registration',function(req,res,next){
-  var context;
-  if(req.query.Email != ""){
-    mysql.pool.query("INSERT INTO hh_User (`FirstName`, `LastName`, `Email`, `Password`, `Phone`, `AddressLine1`, `AddressLine2`, `City`, `State`, `Zip`) VALUES (?,?,?,?,?,?,?,?,?,?)", 
-      [req.query.FirstName, req.query.LastName, req.query.Email, req.query.Password, req.query.Phone, req.query.Address1, req.query.Address2, req.query.City, req.query.State, req.query.Zip], 
-      function(err, result){
-        if(err){
-          console.log(err);
-        }
-        mysql.pool.query("SELECT * FROM hh_User WHERE Email=?", req.query.Email, function(err, row, fields) {
-          userId = row[0].UserId;
-        });
-        res.render('requests');
-    });
-  }
-});
+//GETS
 
 app.get('/requests',function(req,res,next){
   var context;
@@ -91,11 +54,51 @@ app.get('/list',function(req,res,next){
   });
 });
 
-app.get('/pickJob',function(req,res,next){
+//POSTS
+
+app.post('/login', function(req, res) {
+  mysql.pool.query("SELECT * FROM hh_User WHERE Email=?", req.body.Email, function(err, row, fields) {
+    //If the query result is empty then no email exists.
+    if (row == null) {
+      console.log("User email not found");
+      //Send back to login
+      res.render('login');    //Render the login Handlebars page
+    //Else a matching email was found and now we can test against password
+    } else {
+      //If the password is correct matches whats in the database 
+      if (req.body.Password == row[0].Password) {
+        userId = row[0].UserId;
+        res.redirect('/requests');
+      } else {
+        console.log("Wrong Password");
+        res.render('login');
+      }
+    }
+  });
+});
+
+app.post('/registration',function(req,res,next){
+  var context;
+  if(req.body.Email != ""){
+    mysql.pool.query("INSERT INTO hh_User (`FirstName`, `LastName`, `Email`, `Password`, `Phone`, `AddressLine1`, `AddressLine2`, `City`, `State`, `Zip`) VALUES (?,?,?,?,?,?,?,?,?,?)", 
+      [req.body.FirstName, req.body.LastName, req.body.Email, req.body.Password, req.body.Phone, req.body.Address1, req.body.Address2, req.body.City, req.body.State, req.body.Zip], 
+      function(err, result){
+        if(err){
+          console.log(err);
+        }
+        mysql.pool.query("SELECT * FROM hh_User WHERE Email=?", req.body.Email, function(err, row, fields) {
+          userId = row[0].UserId;
+        });
+        res.render('requests');
+    });
+  }
+});
+
+app.post('/pickJob',function(req,res,next){
   var context;
   //Once we get the sessions working, we can run this code.
   mysql.pool.query("UPDATE hh_Request SET VolunteerId=?  WHERE RequestId=?",
-  [userId, req.query.id], function(err, rows, fields){
+  [userId, req.body.id], function(err, rows, fields){
     if(err){
       console.log(err);
     }
@@ -110,11 +113,10 @@ app.get('/pickJob',function(req,res,next){
   });
 });
 
-app.post('/filter', function (req, res, next) {
+app.get('/filter', function (req, res, next) {
     var context;
-    console.log(req.body);      // test if getting correct values in body
     mysql.pool.query("SELECT * FROM hh_Request r INNER JOIN hh_User u ON u.UserId = r.RequesterId WHERE ((u.City=? AND u.State=?) OR (u.Zip=?)) AND VolunteerId IS NULL",
-       [req.body.citySearch, req.body.stateSearch, req.body.zipSearch], function (err, rows, fields) {
+       [req.query.citySearch, req.query.stateSearch, req.query.zipSearch], function (err, rows, fields) {
             if (err) {
                 console.log(err);
             }
